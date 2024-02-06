@@ -3,7 +3,6 @@ document
   .addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    // Gather form data
     const formData = {
       firstName: document.getElementById("firstName").value,
       lastName: document.getElementById("lastName").value,
@@ -14,7 +13,6 @@ document
       password: document.getElementById("password").value,
     };
 
-    // Submit form data to the signup API
     try {
       const response = await fetch("/api/accounts/register", {
         method: "POST",
@@ -24,7 +22,7 @@ document
       const data = await response.json();
       if (response.status === 201) {
         alert("Signup successful. Please log in.");
-        window.location.href = "/login.html"; // Redirect to login page on success
+        window.location.href = "/login.html";
       } else {
         alert(`Signup failed: ${data.message}`);
       }

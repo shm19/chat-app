@@ -5,12 +5,10 @@ const validator = require("validator");
 
 const accountSchema = new mongoose.Schema(
   {
-    // Name
     firstName: { type: String, trim: true },
     lastName: { type: String, trim: true },
     username: { type: String, trim: true, unique: true, required: true },
 
-    // Contact
     email: {
       type: String,
       trim: true,
@@ -31,7 +29,6 @@ const accountSchema = new mongoose.Schema(
       enum: ["dark", "light"],
     },
 
-    // Password
     password: { type: String, minLength: 8, select: false, required: true },
     passwordResetToken: { type: String },
     passwordResetExpiresAt: { type: Date },

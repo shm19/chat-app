@@ -23,7 +23,6 @@ const roomModel = require("./src/models/roomModel");
 
 mongoose.connect("mongodb://0.0.0.0:27017/chat-app", {});
 
-// Basic routing
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/src/public/index.html");
 });
@@ -36,15 +35,13 @@ try {
   io.on("connection", async (socket) => {
     console.log("A user connected");
 
-    // Joining a room or initiating direct message
     socket.on("join", async ({ type, roomId, userId }) => {
       try {
-        if (!roomId) return; // Ensure roomId is provided
+        if (!roomId) return;
 
-        socket.join(roomId); // Join the room for group chat or a unique room for direct messages
+        socket.join(roomId);
 
-        // Fetch initial messages. Adjust this query based on your schema design
-        console.log(`join: ${roomId} as user: ${userId}`); // Debugging
+        console.log(`join: ${roomId} as user: ${userId}`);
 
         let messages;
 
@@ -84,18 +81,17 @@ try {
         const { message, username, type, roomId, recipientId } = data;
 
         console.log("new message", data);
-        // Assuming 'roomId' is the actual room's unique identifier and not MongoDB's '_id'
         const room =
           type === "room" ? await roomModel.findOne({ roomId }) : null;
 
-        const account = await accountModel.findOne({ username }); // Assuming 'username' is unique
+        const account = await accountModel.findOne({ username });
 
         let newMessage = await MessageModel.create({
           message,
           account: account._id,
           type,
           room: room ? room._id : null,
-          recipient: type === "direct" ? recipientId : null, // Assuming direct messages use 'recipientId'
+          recipient: type === "direct" ? recipientId : null,
         });
 
         newMessage = await newMessage.populate("account", "username");
@@ -105,16 +101,12 @@ try {
           io.to(roomId).emit("chat message", {
             message: newMessage.message,
             username: newMessage.account.username,
-            // Include other details as needed
           });
         } else {
-          // Emit to sender
           socket.emit("chat message", {
             message: newMessage.message,
             username: newMessage.account.username,
           });
-          // Additionally, emit to recipient if needed
-          // You'll need the recipient's socket ID or a mechanism to identify the recipient's socket
         }
       } catch (e) {
         console.log(e);

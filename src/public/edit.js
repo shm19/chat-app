@@ -1,15 +1,14 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const form = document.getElementById("editForm");
 
-  // Fetch the current user's data from your API
   try {
-    const accountId = localStorage.getItem("accountId"); // Use an appropriate identifier
+    const accountId = localStorage.getItem("accountId");
     const response = await fetch(`/api/accounts/${accountId}`);
     if (!response.ok) throw new Error("Failed to fetch user data");
     const { data: userData } = await response.json();
 
     console.log(userData);
-    // Populate the form fields
+
     document.getElementById("firstName").value = userData.firstName;
     document.getElementById("lastName").value = userData.lastName;
     document.getElementById("username").value = userData.username;
@@ -20,11 +19,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Error fetching user data:", error);
   }
 
-  // Handle form submission to update user data
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    // Collect form data
     const formData = {
       firstName: document.getElementById("firstName").value,
       lastName: document.getElementById("lastName").value,
@@ -32,10 +29,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       email: document.getElementById("email").value,
       phoneNumber: document.getElementById("phoneNumber").value,
       theme: document.getElementById("theme").value,
-      // Include password if changed, with appropriate checks
     };
 
-    // Send a PUT request to update the user's data
     try {
       const accountId = localStorage.getItem("accountId");
       console.log(accountId);
@@ -46,7 +41,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       if (!response.ok) throw new Error("Failed to update user data");
       alert("Profile updated successfully!");
-      // Redirect or refresh page as needed
     } catch (error) {
       console.error("Error updating user data:", error);
       alert("Failed to update profile.");

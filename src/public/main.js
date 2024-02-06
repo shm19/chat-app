@@ -1,19 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
   const socket = io();
 
-  // Fetch and display the username in the navbar
   const navbarUsername = document.getElementById("navbarUsername");
-  const username = localStorage.getItem("username"); // Assuming this is stored in localStorage
+  const username = localStorage.getItem("username");
 
   if (username && navbarUsername) {
-    navbarUsername.textContent = username; // Set the username text
-    navbarUsername.href = "/edit"; // Set the href to navigate to the edit page
+    navbarUsername.textContent = username;
+    navbarUsername.href = "/edit";
   }
 
-  // Assuming you store the accountId in localStorage after successful login
   const accountId = localStorage.getItem("accountId");
 
-  // Verify if accountId exists
   if (!accountId) {
     window.location.href = "/login.html";
     return;
@@ -27,14 +24,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function populateChatSelection() {
     try {
-      // Update the URL to your actual endpoint that returns the chat options
       const response = await fetch("/api/room-and-accounts");
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      const result = await response.json(); // Assuming the server returns JSON
+      const result = await response.json();
 
-      // Populate the dropdown with options from the server
       chatSelection.innerHTML = result.options
         .map(
           (option) =>
@@ -43,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .join("");
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
-      // Handle errors or show a fallback UI
     }
   }
 
@@ -53,15 +47,15 @@ document.addEventListener("DOMContentLoaded", () => {
     chatSelection.addEventListener("change", () => {
       const value = chatSelection.value;
       const [type, id] = value.split("-");
-      const roomId = type === "room" ? id : undefined; // Example logic
-      const userId = localStorage.getItem("username"); // Ensure this is correctly retrieved
+      const roomId = type === "room" ? id : undefined;
+      const userId = localStorage.getItem("username");
 
-      console.log(value, type, id, userId); // Debugging
-      console.log(`Attempting to join: ${roomId || id} as user: ${userId}`); // Debugging
+      console.log(value, type, id, userId);
+      console.log(`Attempting to join: ${roomId || id} as user: ${userId}`);
 
       socket.emit("join", { type, roomId: roomId || id, userId });
     });
-    // Handle form submission for sending messages
+
     const form = document.getElementById("messageForm");
     const input = document.getElementById("messageInput");
 
@@ -69,13 +63,13 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const messageContent = input.value;
       const selected = chatSelection.value.split("-");
-      const type = selected[0]; // 'room' or 'direct'
-      const id = selected[1]; // room id or user id for direct message
+      const type = selected[0];
+      const id = selected[1];
 
       if (messageContent) {
         socket.emit("new message", {
           message: messageContent,
-          username: localStorage.getItem("username"), // Use actual logic to fetch username
+          username: localStorage.getItem("username"),
           type,
           roomId: type === "room" ? id : undefined,
           recipientId: type === "direct" ? id : undefined,
@@ -84,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Handling incoming chat messages
     socket.on("chat message", function (msg) {
       console.log("new message is received", msg.message);
       const messageItem = document.createElement("div");
@@ -104,9 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
       window.scrollTo(0, document.body.scrollHeight);
     });
 
-    // Handling initial messages when joining a room or direct chat
     socket.on("init messages", function (messages) {
-      messagesContainer.innerHTML = ""; // Clear existing messages
+      messagesContainer.innerHTML = "";
       messages.forEach((msg) => {
         const messageItem = document.createElement("div");
         messageItem.classList.add("p-4", "mb-2", "bg-gray-100", "rounded-lg");
