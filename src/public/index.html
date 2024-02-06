@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Application</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="flex flex-col h-screen">
+    <nav class="bg-blue-500 text-white p-4 flex justify-between items-center">
+      <h1 class="text-lg">Chat Application</h1>
+      <!-- Clickable Username for Navigation -->
+      <div id="userGreeting" class="mx-auto">
+        <a href="/edit" class="font-bold" id="navbarUsername">Username</a>
+      </div>
+      <select
+        id="chatSelection"
+        class="mb-0 p-2 bg-white text-gray-700 rounded shadow outline-none"
+      >
+        <!-- Chat Selection Dropdown -->
+      </select>
+    </nav>
+    <!-- Adjusted padding-bottom (pb-24) to create space for the message form -->
+    <div id="app" class="flex-1 p-4 overflow-auto pb-24">
+      <ul id="messages" class="list-none space-y-2"></ul>
+    </div>
+    <form
+      id="messageForm"
+      class="border-t-2 border-gray-200 p-4 flex justify-between items-center fixed bottom-0 left-0 right-0 bg-white"
+    >
+      <input
+        id="messageInput"
+        class="border-2 border-gray-300 rounded p-2 flex-1 mr-4"
+        autocomplete="off"
+        placeholder="Type your message here..."
+      />
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Send
+      </button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./main.js"></script>
+  </body>
+</html>
